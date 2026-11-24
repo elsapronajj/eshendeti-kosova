@@ -26,9 +26,9 @@ Institucionet shëndetësore në Kosovë nuk kanë një sistem të përbashkët 
 
 | Anëtari | Moduli | Paketat / klasat |
 |---|---|---|
-| _Emri Mbiemri_ | Historiku klinik | `Presentation/HistorikuKlinik`, `Business/HistorikuKlinik`, `Data/HistorikuKlinik`, `frontend/src/modules/historiku-klinik` |
-| _Emri Mbiemri_ | Analizat laboratorike | `Presentation/Analizat`, `Business/Analizat`, `Data/Analizat`, `frontend/src/modules/analizat` |
-| _Emri Mbiemri_ | Autorizimet dhe qasja | `Presentation/Autorizimet`, `Business/Autorizimet`, `Data/Autorizimet`, `frontend/src/modules/autorizimet` |
+| Elsa Pronaj | Historiku klinik | `Presentation/HistorikuKlinik`, `Business/HistorikuKlinik`, `Data/HistorikuKlinik`, `frontend/src/modules/historiku-klinik` |
+| Olta Mucolli | Analizat laboratorike | `Presentation/Analizat`, `Business/Analizat`, `Data/Analizat`, `frontend/src/modules/analizat` |
+| Julinde Rexhepi | Autorizimet dhe qasja | `Presentation/Autorizimet`, `Business/Autorizimet`, `Data/Autorizimet`, `frontend/src/modules/autorizimet` |
 | I gjithë grupi | Puna e përbashkët | Modeli konceptual, skeleti i arkitekturës, autentifikimi, konfigurimi, `Shared/` |
 
 > Tabela përditësohet me klasat konkrete pas përfundimit të dokumentit të dizajnit të detajuar (DDD).
