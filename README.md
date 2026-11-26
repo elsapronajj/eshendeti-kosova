@@ -28,7 +28,7 @@ Institucionet shëndetësore në Kosovë nuk kanë një sistem të përbashkët 
 |---|---|---|
 | Elsa Pronaj | Historiku klinik | `backend/app/Presentation/HistorikuKlinik`, `backend/app/Business/HistorikuKlinik`, `backend/app/Data/HistorikuKlinik`, `frontend/src/modules/historiku-klinik` |
 | Olta Mucolli | Analizat laboratorike | `backend/app/Presentation/Analizat`, `backend/app/Business/Analizat`, `backend/app/Data/Analizat`, `frontend/src/modules/analizat` |
-| Julinde Rexhepi | Autorizimet dhe qasja | `backend/app/Presentation/Autorizimet`, `backend/app/Business/Autorizimet`, `backend/app/Data/Autorizimet`, `frontend/src/modules/autorizimet` |
+| Julindë Rexhepi | Autorizimet dhe qasja | `backend/app/Presentation/Autorizimet`, `backend/app/Business/Autorizimet`, `backend/app/Data/Autorizimet`, `frontend/src/modules/autorizimet` |
 | I gjithë grupi | Puna e përbashkët | Modeli konceptual, skeleti i arkitekturës, autentifikimi, `backend/app/Data/Shared`, seeder-at, `frontend/src/components` |
 
 > Tabela përditësohet me klasat konkrete pas përfundimit të dokumentit të dizajnit të detajuar (DDD).
@@ -96,11 +96,11 @@ Institucionet shëndetësore në Kosovë nuk kanë një sistem të përbashkët 
 Sistemi përdor **stilin shtresor (layered)**. Çdo shtresë thërret vetëm shtresën poshtë saj:
 
 ```text
-Prezantimi          -> faqet React dhe kontrollerët e API-së
+Presentation (Prezantimi)          -> faqet React dhe kontrollerët e API-së          (app/Presentation)
    ↓
-Logjika e biznesit  -> shërbimet e moduleve dhe rregullat e biznesit
+Business (Logjika e biznesit)      -> shërbimet e moduleve dhe rregullat e biznesit  (app/Business)
    ↓
-Qasja në të dhëna   -> modelet Eloquent dhe repozitorët
+Data (Qasja në të dhëna)           -> modelet Eloquent                               (app/Data)
 ```
 
 Çdo modul kalon nëpër të tria shtresat. Çdo anëtar shkruan klasat e modulit të vet në secilën shtresë.
@@ -176,7 +176,7 @@ frontend/src/
 │   └── autorizimet/
 ├── App.jsx                       -> rrugët (React Router)
 └── main.jsx
-
+```
 
 ## Modeli konceptual
 
