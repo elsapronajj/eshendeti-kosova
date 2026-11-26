@@ -26,10 +26,10 @@ Institucionet shëndetësore në Kosovë nuk kanë një sistem të përbashkët 
 
 | Anëtari | Moduli | Paketat / klasat |
 |---|---|---|
-| Elsa Pronaj | Historiku klinik | `Presentation/HistorikuKlinik`, `Business/HistorikuKlinik`, `Data/HistorikuKlinik`, `frontend/src/modules/historiku-klinik` |
-| Olta Mucolli | Analizat laboratorike | `Presentation/Analizat`, `Business/Analizat`, `Data/Analizat`, `frontend/src/modules/analizat` |
-| Julinde Rexhepi | Autorizimet dhe qasja | `Presentation/Autorizimet`, `Business/Autorizimet`, `Data/Autorizimet`, `frontend/src/modules/autorizimet` |
-| I gjithë grupi | Puna e përbashkët | Modeli konceptual, skeleti i arkitekturës, autentifikimi, konfigurimi, `Shared/` |
+| Elsa Pronaj | Historiku klinik | `backend/app/Presentation/HistorikuKlinik`, `backend/app/Business/HistorikuKlinik`, `backend/app/Data/HistorikuKlinik`, `frontend/src/modules/historiku-klinik` |
+| Olta Mucolli | Analizat laboratorike | `backend/app/Presentation/Analizat`, `backend/app/Business/Analizat`, `backend/app/Data/Analizat`, `frontend/src/modules/analizat` |
+| Julinde Rexhepi | Autorizimet dhe qasja | `backend/app/Presentation/Autorizimet`, `backend/app/Business/Autorizimet`, `backend/app/Data/Autorizimet`, `frontend/src/modules/autorizimet` |
+| I gjithë grupi | Puna e përbashkët | Modeli konceptual, skeleti i arkitekturës, autentifikimi, `backend/app/Data/Shared`, seeder-at, `frontend/src/components` |
 
 > Tabela përditësohet me klasat konkrete pas përfundimit të dokumentit të dizajnit të detajuar (DDD).
 
@@ -39,7 +39,7 @@ Institucionet shëndetësore në Kosovë nuk kanë një sistem të përbashkët 
 - Kërkimi i pacientit me numrin personal nga cilido institucion
 - Historiku kohor i vizitave nëpër të gjitha institucionet
 - Regjistrimi i vizitës: lloji (urgjencë, kontroll, shtrim), arsyeja, përshkrimi
-- Diagnozat me kod ICD dhe status (aktive / e shëruar)
+- Diagnozat me kod ICD dhe status (aktive / jo aktive)
 - Terapitë aktuale dhe të mëparshme
 - Alergjitë e pacientit, të shfaqura qartë në krye të dosjes
 - Përmbledhja e gjendjes: diagnozat aktive dhe terapia aktuale
@@ -53,7 +53,7 @@ Institucionet shëndetësore në Kosovë nuk kanë një sistem të përbashkët 
 
 ### Autorizimet dhe qasja
 - Pacienti autorizon ose tërheq qasjen për një institucion
-- Afati i autorizimit dhe lloji (qasje e plotë / vetëm përmbledhje)
+- Afati i autorizimit dhe lloji (i përhershëm / i përkohshëm)
 - Kontrolli nëse mjeku ka qasje para hapjes së dosjes
 - Qasja emergjente me arsye të detyrueshme
 - Regjistri i qasjeve: kush e hapi dosjen, kur, pse
@@ -132,14 +132,14 @@ Shembull: kur mjeku hap dosjen, `HistorikuKlinik` pyet `Autorizimet` nëse ka qa
 ```text
 /backend   -> Laravel REST API
 /frontend  -> React Vite application
-/docs      -> dokumentet e dizajnit dhe diagramet
+/diagramet -> modeli konceptual, SAD-i dhe diagramet
 ```
 
 Backend:
 
 ```text
 backend/app/
-├── Presentation/                 -> kontrollerët e API-së
+├── Presentation/                 -> kontrollerët e API-së, sipas modulit
 │   ├── HistorikuKlinik/
 │   ├── Analizat/
 │   └── Autorizimet/
@@ -147,33 +147,40 @@ backend/app/
 │   ├── HistorikuKlinik/
 │   ├── Analizat/
 │   └── Autorizimet/
-├── Data/                         -> modelet Eloquent dhe repozitorët
-│   ├── HistorikuKlinik/
-│   ├── Analizat/
-│   └── Autorizimet/
-└── Shared/                       -> Pacienti, Mjeku, Institucioni, autentifikimi
+├── Data/                         -> modelet Eloquent
+│   ├── Shared/                   -> Pacienti, Institucioni, Mjeku
+│   ├── HistorikuKlinik/          -> Dosja, Alergjia, Vizita, Diagnoza, Terapia
+│   ├── Analizat/                 -> Analiza
+│   └── Autorizimet/              -> Autorizimi, Qasja
+└── Models/User.php               -> përdoruesi për autentifikim
 backend/routes/api.php            -> rrugët e API-së
 backend/database/migrations       -> skema e bazës së të dhënave
-backend/database/seeders          -> të dhëna demonstrative
+backend/database/seeders          -> të dhëna testimi (InstitucioniSeeder, MjekuSeeder)
 ```
+Rregulli i varësive: `Presentation` thërret vetëm `Business`, dhe `Business` thërret vetëm `Data`. Klasat e modelit konceptual(`Pacienti`, `Dosja`, `Vizita` ...) përdoren vetëm në `Business` dhe `Data`; shtresa `Presentation` merr nga `Business` vetëm të dhëna të përgaditura (DTO).
+
 
 Frontend:
 
 ```text
 frontend/src/
-├── modules/
-│   ├── historiku-klinik/         -> dosja, historiku, diagnozat, terapitë
-│   ├── analizat/                 -> analizat dhe rezultatet
-│   └── autorizimet/              -> autorizimet dhe regjistri i qasjeve
-└── shared/
-    ├── api/client.js             -> Axios dhe interceptors
-    ├── auth/AuthContext.jsx      -> gjendja e autentifikimit
-    └── components/               -> Layout, ProtectedRoute
-```
+├── components/
+│   └── Layout.jsx                -> koka, menyja dhe fundi i përbashkët
+├── pages/
+│   ├── Ballina.jsx               -> faqja hyrëse
+│   ├── Login.jsx                 -> hyrja
+│   └── NukUGjet.jsx              -> faqja 404
+├── modules/                      -> faqet e moduleve (në vijim)
+│   ├── historiku-klinik/
+│   ├── analizat/
+│   └── autorizimet/
+├── App.jsx                       -> rrugët (React Router)
+└── main.jsx
+
 
 ## Modeli konceptual
 
-Modeli konceptual ndodhet në `docs/1_ModeliKonceptual.docx` dhe `docs/diagramet/`.
+Diagrami i modelit konceptual ndodhet në `diagramet/ModeliKonceptual-eShendeti.drawio.png`.
 
 ### Klasat
 
@@ -203,23 +210,23 @@ Modeli konceptual ndodhet në `docs/1_ModeliKonceptual.docx` dhe `docs/diagramet
 - Një mjek kryen shumë qasje; çdo qasje i përket një dosjeje.
 - Spitali dhe QKMF janë lloje të institucionit (trashëgimi).
 
-## Tabelat e bazës së të dhënave (planifikuar)
+## Tabelat e bazës së të dhënave 
 
-| Tabela | Fushat kryesore |
-|---|---|
-| `pacientet` | `id`, `numri_personal`, `emri`, `mbiemri`, `data_lindjes`, `gjinia`, `grupi_gjakut`, `telefoni`, `user_id` |
-| `dosjet` | `id`, `pacienti_id`, `data_krijimit`, `data_perditesimit` |
-| `institucionet` | `id`, `kodi`, `emri`, `qyteti`, `lloji` (spital / qkmf), `numri_shtreterve`, `komuna` |
-| `mjeket` | `id`, `numri_licences`, `emri`, `mbiemri`, `specializimi`, `user_id` |
-| `mjek_institucion` | `mjeku_id`, `institucioni_id` |
-| `vizitat` | `id`, `dosja_id`, `institucioni_id`, `mjeku_id`, `data`, `lloji`, `arsyeja`, `pershkrimi` |
-| `diagnozat` | `id`, `vizita_id`, `kodi_icd`, `pershkrimi`, `data`, `statusi` |
-| `terapite` | `id`, `vizita_id`, `medikamenti`, `dozimi`, `data_fillimit`, `data_perfundimit` |
-| `alergjite` | `id`, `dosja_id`, `substanca`, `ashpersia` |
-| `analizat` | `id`, `vizita_id`, `lloji`, `rezultati`, `njesia`, `kufiri_poshtem`, `kufiri_siperm`, `data`, `statusi` |
-| `autorizimet` | `id`, `pacienti_id`, `institucioni_id`, `lloji`, `data_fillimit`, `data_skadimit`, `statusi` |
-| `qasjet` | `id`, `dosja_id`, `mjeku_id`, `data_ora`, `arsyeja`, `eshte_emergjente` |
-| `users`, `roles`, `user_roles`, `refresh_tokens` | Autentifikimi dhe rolet |
+| Tabela | Moduli | Fushat |
+|---|---|---|
+| `pacientet` | E përbashkët | `id`, `numri_personal`, `emri`, `mbiemri`, `data_e_lindjes`, `gjinia`, `grupi_gjakut`, `telefoni` |
+| `institucionet` | E përbashkët | `id`, `kodi`, `emri`, `qyteti`, `telefoni`, `lloji` (spital / qkmf), `numri_shtreterve`, `komuna` |
+| `mjeket` | E përbashkët | `id`, `numri_i_licences`, `titulli`, `emri`, `mbiemri`, `specializimi`, `statusi_i_licences` |
+| `dosjet` | Historiku klinik | `id`, `pacient_id`, `data_e_krijimit`, `data_e_perditesimit` |
+| `alergjite` | Historiku klinik | `id`, `dosje_id`, `substanca`, `ashpersia` |
+| `vizitat` | Historiku klinik | `id`, `dosje_id`, `mjek_id`, `institucion_id`, `data`, `lloji`, `arsyeja`, `pershkrimi` |
+| `diagnozat` | Historiku klinik | `id`, `vizite_id`, `kodi`, `pershkrimi`, `data`, `statusi` |
+| `terapite` | Historiku klinik | `id`, `vizite_id`, `medikamenti`, `dozimi`, `data_e_fillimit`, `data_e_perfundimit` |
+| `analizat` | Analizat | `id`, `vizite_id`, `lloji`, `rezultati`, `njesia`, `kufiri_i_poshtem`, `kufiri_i_siperm`, `data`, `statusi` |
+| `mjek_institucion` | Autorizimet | `id`, `mjek_id`, `institucion_id` |
+| `autorizimet` | Autorizimet | `id`, `pacient_id`, `institucion_id`, `lloji`, `data_e_fillimit`, `data_e_skadimit`, `statusi` |
+| `qasjet` | Autorizimet | `id`, `dosje_id`, `mjek_id`, `data_ora`, `arsyeja`, `eshte_emergjente` |
+| `users` | Autentifikimi | përdoruesit (rolet dhe refresh token-at shtohen me autentifikimin) |
 
 > Spitali dhe QKMF ruhen në një tabelë (`institucionet`) me fushën `lloji` (single-table inheritance).
 
@@ -307,10 +314,10 @@ POST /api/institucionet
 
 | Kërkesa | Dokumenti | Skedari | Statusi |
 |---|---|---|---|
-| 1 | Modeli konceptual | `docs/1_ModeliKonceptual.docx` | Në punë |
-| 2 | Dokumenti i arkitekturës (SAD) | `docs/2_SAD.docx` | – |
-| 3 | Dokumenti i dizajnit të detajuar (DDD) | `docs/3_DDD.docx` | – |
-| – | Diagramet (draw.io) | `docs/diagramet/` | Në punë |
+| 1 | Modeli konceptual | `diagramet/ModeliKonceptual-eShendeti.drawio.png` | Diagrami gati; përshkrimi me tekst në punë |
+| 2 | Dokumenti i arkitekturës (SAD) | `diagramet/Dokumenti i arkitekturës së softuerit (SAD).docx` | Gati |
+| 3 | Dokumenti i dizajnit të detajuar (DDD) | – | Në vijim |
+| – | Diagramet e sekuencës | te SAD-i | Gati |
 
 ## Instalimi dhe ekzekutimi
 
@@ -321,6 +328,7 @@ cd backend
 composer install
 cp .env.example .env
 php artisan key:generate
+php artisan jwt:secret
 ```
 
 Konfiguro bazën e të dhënave në `backend/.env`:
@@ -337,7 +345,7 @@ DB_PASSWORD=
 Ekzekuto migrimet dhe të dhënat demonstrative:
 
 ```bash
-php artisan migrate --seed
+php artisan migrate:fresh --seed
 php artisan serve --host=127.0.0.1 --port=8011
 ```
 
@@ -396,8 +404,10 @@ npm run build
 - Repozitori është publik.
 - Çdo anëtar bën commit me llogarinë e vet, për modulin e vet, gjatë gjithë punës, jo vetëm në fund.
 - Puna e përbashkët (modeli konceptual, skeleti, autentifikimi, konfigurimi) ndahet në commit-e mes anëtarëve.
-- Mesazhet e commit-eve fillojnë me emrin e modulit, p.sh. `Analizat: shto kontrollin e kufijve referentë`.
-- Para çdo commit-i: `git pull`, pastaj `git add`, `git commit`, `git push`.
+- Mesazhet e commit-eve përshkruajnë shkurt ndryshimin, p.sh. `Modeli Analiza` ose `Tabela vizitat`.
+- Rradha: `git add`, `git commit`, pastaj `git pull --rebase` dhe `git push`.
+- Komandat `composer` dhe `php artisan` ekzekutohen te `backend`, ndërsa `npm` te `frontend`.
+
 
 ## Përmirësime të mundshme
 
