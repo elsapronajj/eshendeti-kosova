@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\HistorikuKlinik;
 
+use App\Data\Autorizimet\Qasja;
+use App\Data\Shared\Pacienti;
 use Illuminate\Database\Eloquent\Model;
 
 class Dosja extends Model

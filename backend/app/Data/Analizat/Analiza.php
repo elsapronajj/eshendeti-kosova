@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\Analizat;
 
+use App\Data\HistorikuKlinik\Vizita;
 use Illuminate\Database\Eloquent\Model;
 
 class Analiza extends Model

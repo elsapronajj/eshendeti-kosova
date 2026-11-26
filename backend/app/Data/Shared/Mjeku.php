@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\Shared;
 
+use App\Data\Autorizimet\Qasja;
+use App\Data\HistorikuKlinik\Vizita;
 use Illuminate\Database\Eloquent\Model;
 
 class Mjeku extends Model

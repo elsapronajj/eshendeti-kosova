@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\HistorikuKlinik;
 
 use Illuminate\Database\Eloquent\Model;
 

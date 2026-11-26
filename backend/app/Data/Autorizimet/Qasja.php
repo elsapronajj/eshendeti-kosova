@@ -1,5 +1,9 @@
 <?php
-namespace App\Models;
+
+namespace App\Data\Autorizimet;
+
+use App\Data\HistorikuKlinik\Dosja;
+use App\Data\Shared\Mjeku;
 use Illuminate\Database\Eloquent\Model;
 
 class Qasja extends Model 

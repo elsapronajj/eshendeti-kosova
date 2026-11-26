@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\Autorizimet;
 
+use App\Data\Shared\Institucioni;
+use App\Data\Shared\Pacienti;
 use Illuminate\Database\Eloquent\Model;
 
 class Autorizimi extends Model

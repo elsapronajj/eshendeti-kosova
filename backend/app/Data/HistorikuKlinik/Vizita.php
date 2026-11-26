@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\HistorikuKlinik;
 
+use App\Data\Analizat\Analiza;
+use App\Data\Shared\Institucioni;
+use App\Data\Shared\Mjeku;
 use Illuminate\Database\Eloquent\Model;
 
 class Vizita extends Model

@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\Shared;
 
+use App\Data\Autorizimet\Autorizimi;
+use App\Data\HistorikuKlinik\Vizita;
 use Illuminate\Database\Eloquent\Model;
 
 class Institucioni extends Model
