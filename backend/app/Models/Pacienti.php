@@ -18,4 +18,9 @@ class Pacienti extends Model
     {
         return $this->hasOne(Dosja::class, 'pacient_id');
     }
+
+    public function autorizimet()
+    {
+        return $this->hasMany(Autorizimi::class, 'pacient_id');
+    }
 }

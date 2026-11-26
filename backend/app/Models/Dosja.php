@@ -26,5 +26,10 @@ class Dosja extends Model
     {
         return $this->hasMany(Vizita::class, 'dosje_id');
     }
+
+    public function qasjet()
+    {
+        return $this->hasMany(Qasja::class, 'dosje_id');
+    }
 }
 

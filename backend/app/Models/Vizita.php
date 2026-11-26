@@ -32,4 +32,14 @@ class Vizita extends Model
     {
         return $this->hasMany(Analiza::class, 'vizite_id');
     }
+
+    public function diagnozat()
+    {
+        return $this->hasMany(Diagnoza::class, 'vizite_id');
+    }
+
+    public function terapite()
+    {
+        return $this->hasMany(Terapia::class, 'vizite_id');
+    }
 }
